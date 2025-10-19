@@ -4,8 +4,21 @@ package matching.v1;
 import "common/v1/common.proto";
 option go_package = "github.com/lhiradi/ride-handling/proto/matching/v1;matchingv1";
 
-message MatchRequest { string trip_id = 1; common.v1.GeoPoint pickup = 2; int32 radius_m = 3; int32 limit = 4; }
-message Invitation { string id = 1; string trip_id = 2; string driver_id = 3; string status = 4; int64 expires_at_unix_sec = 5; }
+message MatchRequest {
+  string trip_id = 1;
+  common.v1.GeoPoint pickup = 2;
+  int32 radius_m = 3;
+  int32 limit = 4;
+}
+
+message Invitation {
+  string id = 1;
+  string trip_id = 2;
+  string driver_id = 3;
+  string status = 4;
+  int64 expires_at_unix_sec = 5;
+}
+
 message MatchResponse { repeated Invitation invites = 1; }
 
 message AcceptInvitationRequest { string invitation_id = 1; string driver_id = 2; }
