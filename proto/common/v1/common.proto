@@ -1,0 +1,15 @@
+// proto/common/v1/common.proto
+syntax = "proto3";
+package common.v1;
+option go_package = "github.com/lhiradi/ride-handling/proto/common/v1;commonv1";
+
+message GeoPoint { double lat = 1; double lon = 2; }
+enum TripStatus {
+  TRIP_STATUS_UNSPECIFIED = 0;
+  REQUESTED = 1;
+  ASSIGNED = 2;
+  EN_ROUTE = 3;
+  ONGOING = 4;
+  COMPLETED = 5;
+  CANCELED = 6;
+}

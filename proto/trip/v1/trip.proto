@@ -1,0 +1,33 @@
+// proto/trip/v1/trip.proto
+syntax = "proto3";
+package trip.v1;
+import "common/v1/common.proto";
+import "google/protobuf/empty.proto";
+option go_package = "github.com/lhiradi/ride-handling/proto/trip/v1;tripv1";
+
+message Trip {
+  string id = 1;
+  string rider_id = 2;
+  string driver_id = 3; // empty until assigned
+  common.v1.GeoPoint pickup = 4;
+  common.v1.GeoPoint dropoff = 5;
+  common.v1.TripStatus status = 6;
+}
+
+message CreateTripRequest {
+  string rider_id = 1;
+  common.v1.GeoPoint pickup = 2;
+  common.v1.GeoPoint dropoff = 3;
+  string request_id = 4; // idempotency key
+}
+message CreateTripResponse { Trip trip = 1; }
+
+message UpdateTripStatusRequest { string trip_id = 1; common.v1.TripStatus status = 2; }
+message GetTripRequest { string trip_id = 1; }
+message GetTripResponse { Trip trip = 1; }
+
+service TripService {
+  rpc CreateTrip(CreateTripRequest) returns (CreateTripResponse);
+  rpc UpdateTripStatus(UpdateTripStatusRequest) returns (.google.protobuf.Empty);
+  rpc GetTrip(GetTripRequest) returns (GetTripResponse);
+}
