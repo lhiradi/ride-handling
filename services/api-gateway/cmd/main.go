@@ -9,14 +9,15 @@ import (
 	tripv1 "github.com/lhiradi/ride-handling/proto/trip/v1"
 	"github.com/lhiradi/ride-handling/services/api-gateway/internal/clients"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 	app := fiber.New()
 
 	// gRPC connections
-	riderConn, _ := grpc.Dial("localhost:50054", grpc.WithInsecure())
-	tripConn, _ := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	riderConn, _ := grpc.Dial("localhost:50054", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	tripConn, _ := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	riderClient := clients.NewRiderClient(riderConn)
 	tripClient := tripv1.NewTripServiceClient(tripConn)
