@@ -22,7 +22,7 @@ message CreateTripRequest {
 }
 message CreateTripResponse { Trip trip = 1; }
 
-message UpdateTripStatusRequest { string trip_id = 1; common.v1.TripStatus status = 2; }
+message UpdateTripStatusRequest { string trip_id = 1; string driver_id = 2; common.v1.TripStatus status = 3; }
 message GetTripRequest { string trip_id = 1; }
 message GetTripResponse { Trip trip = 1; }
 

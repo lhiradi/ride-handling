@@ -215,7 +215,8 @@ func (x *MatchResponse) GetInvites() []*Invitation {
 type AcceptInvitationRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	InvitationId  string                 `protobuf:"bytes,1,opt,name=invitation_id,json=invitationId,proto3" json:"invitation_id,omitempty"`
-	DriverId      string                 `protobuf:"bytes,2,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
+	TripId        string                 `protobuf:"bytes,2,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
+	DriverId      string                 `protobuf:"bytes,3,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -253,6 +254,13 @@ func (*AcceptInvitationRequest) Descriptor() ([]byte, []int) {
 func (x *AcceptInvitationRequest) GetInvitationId() string {
 	if x != nil {
 		return x.InvitationId
+	}
+	return ""
+}
+
+func (x *AcceptInvitationRequest) GetTripId() string {
+	if x != nil {
+		return x.TripId
 	}
 	return ""
 }
@@ -326,10 +334,11 @@ const file_matching_v1_matching_proto_rawDesc = "" +
 	"\x06status\x18\x04 \x01(\tR\x06status\x12-\n" +
 	"\x13expires_at_unix_sec\x18\x05 \x01(\x03R\x10expiresAtUnixSec\"B\n" +
 	"\rMatchResponse\x121\n" +
-	"\ainvites\x18\x01 \x03(\v2\x17.matching.v1.InvitationR\ainvites\"[\n" +
+	"\ainvites\x18\x01 \x03(\v2\x17.matching.v1.InvitationR\ainvites\"t\n" +
 	"\x17AcceptInvitationRequest\x12#\n" +
-	"\rinvitation_id\x18\x01 \x01(\tR\finvitationId\x12\x1b\n" +
-	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\"6\n" +
+	"\rinvitation_id\x18\x01 \x01(\tR\finvitationId\x12\x17\n" +
+	"\atrip_id\x18\x02 \x01(\tR\x06tripId\x12\x1b\n" +
+	"\tdriver_id\x18\x03 \x01(\tR\bdriverId\"6\n" +
 	"\x18AcceptInvitationResponse\x12\x1a\n" +
 	"\baccepted\x18\x01 \x01(\bR\baccepted2\xb2\x01\n" +
 	"\x0fMatchingService\x12>\n" +

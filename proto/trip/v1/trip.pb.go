@@ -224,7 +224,8 @@ func (x *CreateTripResponse) GetTrip() *Trip {
 type UpdateTripStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TripId        string                 `protobuf:"bytes,1,opt,name=trip_id,json=tripId,proto3" json:"trip_id,omitempty"`
-	Status        v1.TripStatus          `protobuf:"varint,2,opt,name=status,proto3,enum=common.v1.TripStatus" json:"status,omitempty"`
+	DriverId      string                 `protobuf:"bytes,2,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
+	Status        v1.TripStatus          `protobuf:"varint,3,opt,name=status,proto3,enum=common.v1.TripStatus" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -262,6 +263,13 @@ func (*UpdateTripStatusRequest) Descriptor() ([]byte, []int) {
 func (x *UpdateTripStatusRequest) GetTripId() string {
 	if x != nil {
 		return x.TripId
+	}
+	return ""
+}
+
+func (x *UpdateTripStatusRequest) GetDriverId() string {
+	if x != nil {
+		return x.DriverId
 	}
 	return ""
 }
@@ -380,10 +388,11 @@ const file_trip_v1_trip_proto_rawDesc = "" +
 	"\n" +
 	"request_id\x18\x04 \x01(\tR\trequestId\"7\n" +
 	"\x12CreateTripResponse\x12!\n" +
-	"\x04trip\x18\x01 \x01(\v2\r.trip.v1.TripR\x04trip\"a\n" +
+	"\x04trip\x18\x01 \x01(\v2\r.trip.v1.TripR\x04trip\"~\n" +
 	"\x17UpdateTripStatusRequest\x12\x17\n" +
-	"\atrip_id\x18\x01 \x01(\tR\x06tripId\x12-\n" +
-	"\x06status\x18\x02 \x01(\x0e2\x15.common.v1.TripStatusR\x06status\")\n" +
+	"\atrip_id\x18\x01 \x01(\tR\x06tripId\x12\x1b\n" +
+	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12-\n" +
+	"\x06status\x18\x03 \x01(\x0e2\x15.common.v1.TripStatusR\x06status\")\n" +
 	"\x0eGetTripRequest\x12\x17\n" +
 	"\atrip_id\x18\x01 \x01(\tR\x06tripId\"4\n" +
 	"\x0fGetTripResponse\x12!\n" +
