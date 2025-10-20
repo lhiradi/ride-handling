@@ -2,7 +2,7 @@
 PROTO_DIR := .
 OUT := .
 
-PROTO_FILES := common/v1/common.proto driver/v1/driver.proto trip/v1/trip.proto matching/v1/matching.proto
+PROTO_FILES := common/v1/common.proto driver/v1/driver.proto trip/v1/trip.proto matching/v1/matching.proto rider/v1/rider.proto
 
 # Generate Go code for all protos in this folder.
 # Requires:
