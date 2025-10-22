@@ -205,6 +205,110 @@ func (x *HeartbeatRequest) GetAtUnixSec() int64 {
 	return 0
 }
 
+type FindNearbyDriversRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Lat           float64                `protobuf:"fixed64,1,opt,name=lat,proto3" json:"lat,omitempty"`                           // Latitude of rider
+	Lon           float64                `protobuf:"fixed64,2,opt,name=lon,proto3" json:"lon,omitempty"`                           // Longitude of rider
+	RadiusKm      float64                `protobuf:"fixed64,3,opt,name=radius_km,json=radiusKm,proto3" json:"radius_km,omitempty"` // Search radius in kilometers
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FindNearbyDriversRequest) Reset() {
+	*x = FindNearbyDriversRequest{}
+	mi := &file_driver_v1_driver_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FindNearbyDriversRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FindNearbyDriversRequest) ProtoMessage() {}
+
+func (x *FindNearbyDriversRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_driver_v1_driver_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FindNearbyDriversRequest.ProtoReflect.Descriptor instead.
+func (*FindNearbyDriversRequest) Descriptor() ([]byte, []int) {
+	return file_driver_v1_driver_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *FindNearbyDriversRequest) GetLat() float64 {
+	if x != nil {
+		return x.Lat
+	}
+	return 0
+}
+
+func (x *FindNearbyDriversRequest) GetLon() float64 {
+	if x != nil {
+		return x.Lon
+	}
+	return 0
+}
+
+func (x *FindNearbyDriversRequest) GetRadiusKm() float64 {
+	if x != nil {
+		return x.RadiusKm
+	}
+	return 0
+}
+
+type FindNearbyDriversResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DriverIds     []string               `protobuf:"bytes,1,rep,name=driver_ids,json=driverIds,proto3" json:"driver_ids,omitempty"` // List of nearby driver IDs
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FindNearbyDriversResponse) Reset() {
+	*x = FindNearbyDriversResponse{}
+	mi := &file_driver_v1_driver_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FindNearbyDriversResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FindNearbyDriversResponse) ProtoMessage() {}
+
+func (x *FindNearbyDriversResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_driver_v1_driver_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FindNearbyDriversResponse.ProtoReflect.Descriptor instead.
+func (*FindNearbyDriversResponse) Descriptor() ([]byte, []int) {
+	return file_driver_v1_driver_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *FindNearbyDriversResponse) GetDriverIds() []string {
+	if x != nil {
+		return x.DriverIds
+	}
+	return nil
+}
+
 var File_driver_v1_driver_proto protoreflect.FileDescriptor
 
 const file_driver_v1_driver_proto_rawDesc = "" +
@@ -221,10 +325,18 @@ const file_driver_v1_driver_proto_rawDesc = "" +
 	"\x10HeartbeatRequest\x12\x1b\n" +
 	"\tdriver_id\x18\x01 \x01(\tR\bdriverId\x12/\n" +
 	"\blocation\x18\x02 \x01(\v2\x13.common.v1.GeoPointR\blocation\x12\x1e\n" +
-	"\vat_unix_sec\x18\x03 \x01(\x03R\tatUnixSec2\x93\x01\n" +
+	"\vat_unix_sec\x18\x03 \x01(\x03R\tatUnixSec\"[\n" +
+	"\x18FindNearbyDriversRequest\x12\x10\n" +
+	"\x03lat\x18\x01 \x01(\x01R\x03lat\x12\x10\n" +
+	"\x03lon\x18\x02 \x01(\x01R\x03lon\x12\x1b\n" +
+	"\tradius_km\x18\x03 \x01(\x01R\bradiusKm\":\n" +
+	"\x19FindNearbyDriversResponse\x12\x1d\n" +
+	"\n" +
+	"driver_ids\x18\x01 \x03(\tR\tdriverIds2\xf3\x01\n" +
 	"\rDriverService\x12@\n" +
 	"\tSetStatus\x12\x1b.driver.v1.SetStatusRequest\x1a\x16.google.protobuf.Empty\x12@\n" +
-	"\tHeartbeat\x12\x1b.driver.v1.HeartbeatRequest\x1a\x16.google.protobuf.EmptyB;Z9github.com/lhiradi/ride-handling/proto/driver/v1;driverv1b\x06proto3"
+	"\tHeartbeat\x12\x1b.driver.v1.HeartbeatRequest\x1a\x16.google.protobuf.Empty\x12^\n" +
+	"\x11FindNearbyDrivers\x12#.driver.v1.FindNearbyDriversRequest\x1a$.driver.v1.FindNearbyDriversResponseB;Z9github.com/lhiradi/ride-handling/proto/driver/v1;driverv1b\x06proto3"
 
 var (
 	file_driver_v1_driver_proto_rawDescOnce sync.Once
@@ -238,22 +350,26 @@ func file_driver_v1_driver_proto_rawDescGZIP() []byte {
 	return file_driver_v1_driver_proto_rawDescData
 }
 
-var file_driver_v1_driver_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_driver_v1_driver_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_driver_v1_driver_proto_goTypes = []any{
-	(*Driver)(nil),           // 0: driver.v1.Driver
-	(*SetStatusRequest)(nil), // 1: driver.v1.SetStatusRequest
-	(*HeartbeatRequest)(nil), // 2: driver.v1.HeartbeatRequest
-	(*v1.GeoPoint)(nil),      // 3: common.v1.GeoPoint
-	(*emptypb.Empty)(nil),    // 4: google.protobuf.Empty
+	(*Driver)(nil),                    // 0: driver.v1.Driver
+	(*SetStatusRequest)(nil),          // 1: driver.v1.SetStatusRequest
+	(*HeartbeatRequest)(nil),          // 2: driver.v1.HeartbeatRequest
+	(*FindNearbyDriversRequest)(nil),  // 3: driver.v1.FindNearbyDriversRequest
+	(*FindNearbyDriversResponse)(nil), // 4: driver.v1.FindNearbyDriversResponse
+	(*v1.GeoPoint)(nil),               // 5: common.v1.GeoPoint
+	(*emptypb.Empty)(nil),             // 6: google.protobuf.Empty
 }
 var file_driver_v1_driver_proto_depIdxs = []int32{
-	3, // 0: driver.v1.HeartbeatRequest.location:type_name -> common.v1.GeoPoint
+	5, // 0: driver.v1.HeartbeatRequest.location:type_name -> common.v1.GeoPoint
 	1, // 1: driver.v1.DriverService.SetStatus:input_type -> driver.v1.SetStatusRequest
 	2, // 2: driver.v1.DriverService.Heartbeat:input_type -> driver.v1.HeartbeatRequest
-	4, // 3: driver.v1.DriverService.SetStatus:output_type -> google.protobuf.Empty
-	4, // 4: driver.v1.DriverService.Heartbeat:output_type -> google.protobuf.Empty
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	3, // 3: driver.v1.DriverService.FindNearbyDrivers:input_type -> driver.v1.FindNearbyDriversRequest
+	6, // 4: driver.v1.DriverService.SetStatus:output_type -> google.protobuf.Empty
+	6, // 5: driver.v1.DriverService.Heartbeat:output_type -> google.protobuf.Empty
+	4, // 6: driver.v1.DriverService.FindNearbyDrivers:output_type -> driver.v1.FindNearbyDriversResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -270,7 +386,7 @@ func file_driver_v1_driver_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_driver_v1_driver_proto_rawDesc), len(file_driver_v1_driver_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

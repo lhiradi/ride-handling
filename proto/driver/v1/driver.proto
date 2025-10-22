@@ -19,8 +19,18 @@ message HeartbeatRequest {
   common.v1.GeoPoint location = 2;
   int64 at_unix_sec = 3;
 }
+message FindNearbyDriversRequest {
+  double lat = 1;         // Latitude of rider
+  double lon = 2;         // Longitude of rider
+  double radius_km = 3;   // Search radius in kilometers
+}
+
+message FindNearbyDriversResponse {
+  repeated string driver_ids = 1; // List of nearby driver IDs
+}
 
 service DriverService {
   rpc SetStatus(SetStatusRequest) returns (.google.protobuf.Empty);
   rpc Heartbeat(HeartbeatRequest) returns (.google.protobuf.Empty);
+  rpc FindNearbyDrivers(FindNearbyDriversRequest) returns (FindNearbyDriversResponse);
 }

@@ -17,6 +17,7 @@ func main() {
 	dsn := utils.GetDsn()
 
 	// Initialize DB
+	db.InitRedis("localhost:6379")
 	db.InitDB(dsn)
 	database := db.Get()
 

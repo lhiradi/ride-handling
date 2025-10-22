@@ -22,8 +22,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DriverService_SetStatus_FullMethodName = "/driver.v1.DriverService/SetStatus"
-	DriverService_Heartbeat_FullMethodName = "/driver.v1.DriverService/Heartbeat"
+	DriverService_SetStatus_FullMethodName         = "/driver.v1.DriverService/SetStatus"
+	DriverService_Heartbeat_FullMethodName         = "/driver.v1.DriverService/Heartbeat"
+	DriverService_FindNearbyDrivers_FullMethodName = "/driver.v1.DriverService/FindNearbyDrivers"
 )
 
 // DriverServiceClient is the client API for DriverService service.
@@ -32,6 +33,7 @@ const (
 type DriverServiceClient interface {
 	SetStatus(ctx context.Context, in *SetStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Heartbeat(ctx context.Context, in *HeartbeatRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	FindNearbyDrivers(ctx context.Context, in *FindNearbyDriversRequest, opts ...grpc.CallOption) (*FindNearbyDriversResponse, error)
 }
 
 type driverServiceClient struct {
@@ -62,12 +64,23 @@ func (c *driverServiceClient) Heartbeat(ctx context.Context, in *HeartbeatReques
 	return out, nil
 }
 
+func (c *driverServiceClient) FindNearbyDrivers(ctx context.Context, in *FindNearbyDriversRequest, opts ...grpc.CallOption) (*FindNearbyDriversResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FindNearbyDriversResponse)
+	err := c.cc.Invoke(ctx, DriverService_FindNearbyDrivers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DriverServiceServer is the server API for DriverService service.
 // All implementations must embed UnimplementedDriverServiceServer
 // for forward compatibility.
 type DriverServiceServer interface {
 	SetStatus(context.Context, *SetStatusRequest) (*emptypb.Empty, error)
 	Heartbeat(context.Context, *HeartbeatRequest) (*emptypb.Empty, error)
+	FindNearbyDrivers(context.Context, *FindNearbyDriversRequest) (*FindNearbyDriversResponse, error)
 	mustEmbedUnimplementedDriverServiceServer()
 }
 
@@ -83,6 +96,9 @@ func (UnimplementedDriverServiceServer) SetStatus(context.Context, *SetStatusReq
 }
 func (UnimplementedDriverServiceServer) Heartbeat(context.Context, *HeartbeatRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Heartbeat not implemented")
+}
+func (UnimplementedDriverServiceServer) FindNearbyDrivers(context.Context, *FindNearbyDriversRequest) (*FindNearbyDriversResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindNearbyDrivers not implemented")
 }
 func (UnimplementedDriverServiceServer) mustEmbedUnimplementedDriverServiceServer() {}
 func (UnimplementedDriverServiceServer) testEmbeddedByValue()                       {}
@@ -141,6 +157,24 @@ func _DriverService_Heartbeat_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DriverService_FindNearbyDrivers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindNearbyDriversRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DriverServiceServer).FindNearbyDrivers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DriverService_FindNearbyDrivers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DriverServiceServer).FindNearbyDrivers(ctx, req.(*FindNearbyDriversRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DriverService_ServiceDesc is the grpc.ServiceDesc for DriverService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -155,6 +189,10 @@ var DriverService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Heartbeat",
 			Handler:    _DriverService_Heartbeat_Handler,
+		},
+		{
+			MethodName: "FindNearbyDrivers",
+			Handler:    _DriverService_FindNearbyDrivers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
