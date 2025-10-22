@@ -19,28 +19,29 @@ type driverRepo struct {
 	DB *gorm.DB
 }
 
-func NewGormDriver(DB *gorm.DB) *driverRepo {
-	return &driverRepo{DB: DB}
+func NewDriverRepo(db *gorm.DB) DriverRepository {
+	return &driverRepo{DB: db}
 }
 
-func (d *driverRepo) Create(ctx context.Context, driver *DriverRepository) error {
-	return d.DB.WithContext(ctx).Create(driver).Error
+func (r *driverRepo) Create(ctx context.Context, driver *models.Driver) error {
+	return r.DB.WithContext(ctx).Create(driver).Error
 }
 
-func (d *driverRepo) GetByID(ctx context.Context, id string) (*models.Driver, error) {
+func (r *driverRepo) GetByID(ctx context.Context, id string) (*models.Driver, error) {
 	var driver models.Driver
-	if err := d.DB.WithContext(ctx).Find(&driver, "id = ?", id).Error; err != nil {
+	if err := r.DB.WithContext(ctx).First(&driver, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, err
 	}
-
 	return &driver, nil
 }
 
-func (d *driverRepo) UpdateStatus(ctx context.Context, id string, status string) error {
-	return d.DB.WithContext(ctx).Model(&driverRepo{}).Where("id = ?", id).
+func (r *driverRepo) UpdateStatus(ctx context.Context, id string, status string) error {
+	return r.DB.WithContext(ctx).
+		Model(&models.Driver{}).
+		Where("id = ?", id).
 		Update("status", status).Error
 }
 
