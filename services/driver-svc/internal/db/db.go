@@ -4,6 +4,7 @@ import (
 	"log"
 	"sync"
 
+	"github.com/lhiradi/ride-handling/services/driver-svc/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -18,6 +19,9 @@ func InitDB(dsn string) {
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Fatalf("failed to connect database: %v", err)
+		}
+		if err := db.AutoMigrate(&models.Driver{}); err != nil {
+			log.Fatalf("failed to migrate: %v", err)
 		}
 		instance = db
 	})
