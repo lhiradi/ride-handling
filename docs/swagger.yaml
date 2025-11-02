@@ -1,0 +1,182 @@
+openapi: 3.0.0
+info:
+  title: Ride Handling API
+  version: "1.0.0"
+  description: REST API Gateway for ride-hailing microservices
+servers:
+  - url: http://localhost:8080
+paths:
+  /riders:
+    post:
+      summary: Create a new rider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone]
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                language:
+                  type: string
+      responses:
+        "201":
+          description: Rider created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rider_id:
+                    type: string
+  /riders/{id}:
+    get:
+      summary: Get rider by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rider details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name: { type: string }
+                  phone: { type: string }
+                  email: { type: string }
+                  language: { type: string }
+  /trips:
+    post:
+      summary: Create a new trip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rider_id, pickup_lat, pickup_lon, drop_lat, drop_lon]
+              properties:
+                rider_id: { type: string }
+                pickup_lat: { type: number, format: double }
+                pickup_lon: { type: number, format: double }
+                drop_lat: { type: number, format: double }
+                drop_lon: { type: number, format: double }
+      responses:
+        "200":
+          description: Trip created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trip:
+                    type: object
+  /drivers/{id}/status:
+    post:
+      summary: Set driver status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string }
+      responses:
+        "204":
+          description: Status updated
+  /drivers/{id}/heartbeat:
+    post:
+      summary: Send driver heartbeat
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [lat, lon]
+              properties:
+                lat: { type: number, format: double }
+                lon: { type: number, format: double }
+      responses:
+        "204":
+          description: Heartbeat accepted
+  /match:
+    post:
+      summary: Find nearby drivers for a trip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [trip_id, pickup_lat, pickup_lon, radius_km, limit]
+              properties:
+                trip_id: { type: string }
+                pickup_lat: { type: number, format: double }
+                pickup_lon: { type: number, format: double }
+                radius_km: { type: number, format: double }
+                limit: { type: integer }
+      responses:
+        "200":
+          description: Matching invitations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invites:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: string }
+                        trip_id: { type: string }
+                        driver_id: { type: string }
+                        status: { type: string }
+                        expires_at_unix_sec: { type: integer }
+  /accept:
+    post:
+      summary: Accept a driver invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [invitation_id, trip_id, driver_id]
+              properties:
+                invitation_id: { type: string }
+                trip_id: { type: string }
+                driver_id: { type: string }
+      responses:
+        "200":
+          description: Invitation accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted: { type: boolean }
