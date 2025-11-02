@@ -1,13 +1,13 @@
+// services/api-gateway/cmd/main.go
 package main
 
 import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	commonv1 "github.com/lhiradi/ride-handling/proto/common/v1"
-	riderv1 "github.com/lhiradi/ride-handling/proto/rider/v1"
-	tripv1 "github.com/lhiradi/ride-handling/proto/trip/v1"
 	"github.com/lhiradi/ride-handling/services/api-gateway/internal/clients"
+	"github.com/lhiradi/ride-handling/services/api-gateway/internal/router"
+	"github.com/lhiradi/ride-handling/services/api-gateway/internal/services"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -16,53 +16,41 @@ func main() {
 	app := fiber.New()
 
 	// gRPC connections
-	riderConn, _ := grpc.Dial("localhost:50054", grpc.WithTransportCredentials(insecure.NewCredentials()))
-	tripConn, _ := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	driverConn, err := grpc.Dial("localhost:50052", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to DriverService: %v", err)
+	}
+	riderConn, err := grpc.Dial("localhost:50054", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to RiderService: %v", err)
+	}
+	tripConn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to TripService: %v", err)
+	}
+	matchingConn, err := grpc.Dial("localhost:50053", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to MatchingService: %v", err)
+	}
 
+	// Clients
+	driverClient := clients.NewDriverClient(driverConn)
 	riderClient := clients.NewRiderClient(riderConn)
-	tripClient := tripv1.NewTripServiceClient(tripConn)
+	tripClient := clients.NewTripClient(tripConn)
+	matchingClient := clients.NewMatchingClient(matchingConn)
 
-	// Create Rider
-	app.Post("/riders", func(c *fiber.Ctx) error {
-		var req struct {
-			Name     string `json:"name"`
-			Phone    string `json:"phone"`
-			Email    string `json:"email"`
-			Language string `json:"language"`
-		}
-		if err := c.BodyParser(&req); err != nil {
-			return fiber.ErrBadRequest
-		}
-		resp, err := riderClient.CreateRider(c.Context(), &riderv1.CreateRiderRequest{
-			Name: req.Name, Phone: req.Phone, Email: req.Email, Language: req.Language,
-		})
-		if err != nil {
-			return fiber.NewError(502, err.Error())
-		}
-		return c.JSON(fiber.Map{"rider_id": resp.RiderId})
-	})
+	// Services
+	driverSvc := &services.DriverService{Client: driverClient}
+	riderSvc := &services.RiderService{Client: riderClient}
+	tripSvc := &services.TripService{Client: tripClient}
+	matchingSvc := &services.MatchingService{Client: matchingClient}
 
-	// Create Trip
-	app.Post("/trips", func(c *fiber.Ctx) error {
-		var req struct {
-			RiderID string            `json:"rider_id"`
-			Pickup  commonv1.GeoPoint `json:"pickup"`
-			Dropoff commonv1.GeoPoint `json:"dropoff"`
-		}
-		if err := c.BodyParser(&req); err != nil {
-			return fiber.ErrBadRequest
-		}
-		resp, err := tripClient.CreateTrip(c.Context(), &tripv1.CreateTripRequest{
-			RiderId: req.RiderID,
-			Pickup:  &req.Pickup,
-			Dropoff: &req.Dropoff,
-		})
-		if err != nil {
-			return fiber.NewError(502, err.Error())
-		}
-		return c.JSON(resp.Trip)
-	})
+	// Router setup
+	router.Setup(app, driverSvc, riderSvc, tripSvc, matchingSvc)
 
+	// Start server
 	log.Println("API Gateway listening on :8080")
-	log.Fatal(app.Listen(":8080"))
+	if err := app.Listen(":8080"); err != nil {
+		log.Fatalf("failed to start API Gateway: %v", err)
+	}
 }
