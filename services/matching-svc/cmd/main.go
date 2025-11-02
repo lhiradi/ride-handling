@@ -18,13 +18,19 @@ func main() {
 	if err != nil {
 		log.Fatal("failed to connect to TripService:", err)
 	}
+	driverConn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
+	if err != nil {
+		log.Fatal("Failed to connect to DriverService:", err)
+	}
+	driverClient := client.NewDriverServiceClient(driverConn)
 	tripClient := client.NewTripClient(tripConn)
 
 	lis, _ := net.Listen("tcp", ":50053")
 	s := grpc.NewServer()
 	matchingv1.RegisterMatchingServiceServer(s, &handlers.MatchingServer{
-		Rdb:        rdb,
-		TripClient: tripClient,
+		Rdb:          rdb,
+		TripClient:   tripClient,
+		DriverClient: *driverClient,
 	})
 	log.Println("Matching service listening on :50053")
 	if err := s.Serve(lis); err != nil {

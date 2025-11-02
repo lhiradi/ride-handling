@@ -12,17 +12,13 @@ import (
 
 type MatchingServer struct {
 	matchingv1.UnimplementedMatchingServiceServer
-	Rdb        *redis.Client
-	TripClient client.TripClient
+	Rdb          *redis.Client
+	TripClient   client.TripClient
+	DriverClient client.DriverClient
 }
 
 func (m *MatchingServer) Match(ctx context.Context, req *matchingv1.MatchRequest) (*matchingv1.MatchResponse, error) {
-	res, err := m.Rdb.GeoRadius(ctx, "active_drivers", req.Pickup.Lon, req.Pickup.Lat,
-		&redis.GeoRadiusQuery{
-			Radius: float64(req.RadiusM),
-			Unit:   "m",
-			Count:  int(req.Limit),
-		}).Result()
+	res, err := m.DriverClient.FindNearbyDrivers(ctx, req.Pickup.Lat, req.Pickup.Lon, float64(req.RadiusM))
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +28,7 @@ func (m *MatchingServer) Match(ctx context.Context, req *matchingv1.MatchRequest
 		invites = append(invites, &matchingv1.Invitation{
 			Id:               uuid.NewString(),
 			TripId:           req.TripId,
-			DriverId:         d.Name,
+			DriverId:         d,
 			Status:           "pending",
 			ExpiresAtUnixSec: 0, // optional
 		})
