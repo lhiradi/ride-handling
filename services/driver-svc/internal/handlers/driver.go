@@ -5,6 +5,7 @@ import (
 	"log"
 
 	driverv1 "github.com/lhiradi/ride-handling/proto/driver/v1"
+	"github.com/lhiradi/ride-handling/services/driver-svc/internal/models"
 	"github.com/lhiradi/ride-handling/services/driver-svc/repository"
 
 	"google.golang.org/grpc/codes"
@@ -15,6 +16,20 @@ import (
 type DriverServer struct {
 	driverv1.UnimplementedDriverServiceServer
 	Repo repository.DriverRepository
+}
+
+func (s *DriverServer) CreateDriver(ctx context.Context, req *driverv1.CreateDriverRequest) (*driverv1.CreateDriverResponse, error) {
+	driver := &models.Driver{
+		Name:         req.Name,
+		Phone:        req.Phone,
+		Vechile:      req.Vehicle,
+		Status:       "offline",
+		PasswordHash: req.PasswordHash,
+	}
+	if err := s.Repo.Create(ctx, driver); err != nil {
+		return nil, err
+	}
+	return &driverv1.CreateDriverResponse{DriverId: driver.ID}, nil
 }
 
 func (s *DriverServer) SetStatus(ctx context.Context, req *driverv1.SetStatusRequest) (*emptypb.Empty, error) {

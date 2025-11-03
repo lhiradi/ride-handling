@@ -10,6 +10,7 @@ message Driver {
   string name = 2;
   string phone = 3;
   string vehicle = 4;
+  string password_hash = 5;
 }
 
 message SetStatusRequest { string driver_id = 1; string status = 2; } // "online" | "offline"
@@ -24,13 +25,22 @@ message FindNearbyDriversRequest {
   double lon = 2;         // Longitude of rider
   double radius_km = 3;   // Search radius in kilometers
 }
+message CreateDriverRequest {
+  string name = 1;
+  string phone = 2;
+  string vehicle = 3;
+  string password_hash = 4;
+}
+message CreateDriverResponse { string driver_id = 1; }
 
 message FindNearbyDriversResponse {
   repeated string driver_ids = 1; // List of nearby driver IDs
 }
 
 service DriverService {
+  rpc CreateDriver(CreateDriverRequest) returns (CreateDriverResponse);
   rpc SetStatus(SetStatusRequest) returns (.google.protobuf.Empty);
   rpc Heartbeat(HeartbeatRequest) returns (.google.protobuf.Empty);
   rpc FindNearbyDrivers(FindNearbyDriversRequest) returns (FindNearbyDriversResponse);
+
 }
