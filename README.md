@@ -7,10 +7,25 @@ This project demonstrates a clean microservice architecture with clear service b
 ---
 
 ## 📂 Project Structure
+```
+├── proto/                      # Shared Protocol Buffer (protobuf) definitions
+│   ├── common/v1/            # Common messages (e.g., GeoPoint, TripStatus)
+│   ├── driver/v1/            # Driver-related gRPC services and messages
+│   ├── rider/v1/             # Rider-related gRPC services and messages
+│   ├── trip/v1/              # Trip lifecycle gRPC services and messages
+│   └── matching/v1/          # Matching logic gRPC services (e.g., driver-rider assignment)
+│
+├── services/                   # Microservices implementation
+│   ├── driver-svc/           # Manages driver status, heartbeat, and real-time location (uses Redis + PostgreSQL)
+│   ├── rider-svc/            # Handles rider CRUD operations
+│   ├── trip-svc/             # Orchestrates full trip lifecycle (creation, updates, completion)
+│   ├── matching-svc/         # Implements matching algorithm and sends ride invitations
+│   └── api-gateway/          # REST-to-gRPC gateway (built with Fiber), includes Swagger UI
+│
+└── docs/
+    └── swagger.yaml          # OpenAPI specification for the public REST APIy
+```
 
-├── proto/ # Shared protobuf contracts │ ├── common/v1 # GeoPoint, TripStatus │ ├── driver/v1 # Driver RPCs │ ├── rider/v1 # Rider RPCs │ ├── trip/v1 # Trip RPCs │ └── matching/v1 # Matching RPCs ├── services/ │ ├── driver-svc # Driver status, heartbeat, location (Redis + Postgres) │ ├── rider-svc # Rider CRUD │ ├── trip-svc # Trip lifecycle management │ ├── matching-svc # Driver matching & invitations │ └── api-gateway # REST → gRPC gateway (Fiber + Swagger) └── docs/ └── swagger.yaml # OpenAPI spec for API Gateway
-
-Code
 
 ---
 
